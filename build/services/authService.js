@@ -14,16 +14,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.manualRegister = void 0;
 const User_1 = __importDefault(require("../models/User"));
+const passwordService_1 = require("./passwordService");
 const manualRegister = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const newUser = new User_1.default({
         googleId: null,
         fullname: data.fullname,
         email: data.email,
-        password: data.password,
+        password: (0, passwordService_1.hashPassowrd)(data.password),
         address: data.address,
         neighborhoods: data.neighborhoods,
         photo: data.photo,
-        role: 'USER'
+        role: 'USER',
+        isDeleted: false
     });
     try {
         yield newUser.save();

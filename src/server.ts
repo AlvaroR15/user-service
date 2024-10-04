@@ -1,6 +1,7 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import authRouter from './routes/authRoute';
+import userRouter from './routes/userRoute'
 import { connectToDB } from './config/connectToDb';
 
 dotenv.config()
@@ -12,7 +13,7 @@ connectToDB()
 app.use(express.urlencoded({extended: false}))
 app.use(express.json())
 
-app.use('/api-user', authRouter)
+app.use('/api-user', authRouter, userRouter)
 
 app.listen(PORT, () => {
     console.log(`[server]: running on port ${PORT}`);

@@ -1,16 +1,17 @@
 import  User, {UserInput}  from "../models/User";
-
+import { hashPassowrd } from "./passwordService";
 
 export const manualRegister = async (data: UserInput): Promise<number> => {
     const newUser = new User({
         googleId: null,
         fullname: data.fullname,
         email: data.email,
-        password: data.password,
+        password: hashPassowrd(data.password),
         address: data.address,
         neighborhoods: data.neighborhoods,
         photo: data.photo,
-        role: 'USER'
+        role: 'USER',
+        isDeleted: false
     })
 
     try {

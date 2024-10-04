@@ -35,7 +35,13 @@ const userSchema = new mongoose_1.default.Schema({
     role: {
         type: String,
         default: 'USER'
+    },
+    isDeleted: {
+        type: Boolean,
+        required: true
     }
+}, {
+    timestamps: true
 });
 const User = mongoose_1.default.model('User', userSchema);
 exports.default = User;

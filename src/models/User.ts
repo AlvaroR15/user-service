@@ -1,5 +1,12 @@
 import mongoose from "mongoose";
 
+export interface UserInputEdit {
+    fullname: string,
+    address: string,
+    neighborhoods: string,
+    photo: string
+}
+
 export interface UserInput {
     fullname:string,
     email:string,
@@ -40,7 +47,13 @@ const userSchema = new mongoose.Schema({
     role: {
         type: String,
         default: 'USER'
+    },
+    isDeleted: {
+        type: Boolean,
+        required: true
     }
+}, {
+    timestamps: true
 })
 
 const User = mongoose.model<UserInput>('User', userSchema);
