@@ -1,9 +1,15 @@
 import express from 'express'
-import { editUserController } from '../controllers/userController';
+import { deleteUserController, editUserController, userProfileController } from '../controllers/userController';
+import { verifyToken } from '../middlewares/verifyTokenMiddleware';
 
 const router = express.Router()
 
+router.get('/profile', verifyToken,userProfileController)
 
-router.put('/user/edit/:id', editUserController);
+router.put('/edit/:id', editUserController);
+
+router.delete('/delete/:id', deleteUserController)
+
+
 
 export default router

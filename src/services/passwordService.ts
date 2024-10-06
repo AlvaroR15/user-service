@@ -7,7 +7,7 @@ export const hashPassowrd = (password:string):string => {
 
 
 export const comparePasswords = (plainPassword:string, hashedPassword:string):boolean => {
-    const verifyPassword = bcrypt.compareSync(hashedPassword, plainPassword);
+    const verifyPassword = bcrypt.compareSync(plainPassword, hashedPassword);
 
     if(!verifyPassword) {
         return false;

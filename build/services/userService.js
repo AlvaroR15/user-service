@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.editProfileUser = void 0;
+exports.softUserDeletion = exports.getUserProfile = exports.editProfileUser = void 0;
 const User_1 = __importDefault(require("../models/User"));
 const editProfileUser = (data, id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -37,3 +37,36 @@ const editProfileUser = (data, id) => __awaiter(void 0, void 0, void 0, function
     }
 });
 exports.editProfileUser = editProfileUser;
+const getUserProfile = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const findUser = yield User_1.default.findById(id);
+        if (findUser) {
+            return findUser;
+        }
+        else {
+            return null;
+        }
+    }
+    catch (error) {
+        console.log(error);
+        return null;
+    }
+});
+exports.getUserProfile = getUserProfile;
+const softUserDeletion = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const userToDelete = yield (0, exports.getUserProfile)(id);
+        if (userToDelete !== null) {
+            userToDelete.isDeleted = true;
+            yield userToDelete.save();
+            return 0;
+        }
+        else {
+            return 2;
+        }
+    }
+    catch (error) {
+        return 1;
+    }
+});
+exports.softUserDeletion = softUserDeletion;

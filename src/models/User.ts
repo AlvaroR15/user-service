@@ -14,6 +14,7 @@ export interface UserInput {
     address:string,
     neighborhoods:string,
     photo: string,
+    isDeleted: boolean
 }
 
 const userSchema = new mongoose.Schema({

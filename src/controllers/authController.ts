@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { manualRegister } from "../services/authService";
+import { login, manualRegister } from "../services/authService";
 import { successResponse, errorResponse, generalErrorResponse } from "../utils/responseUtils";
 
 export const manualRegisterController = async (req:Request, res: Response) => {
@@ -23,5 +23,41 @@ export const manualRegisterController = async (req:Request, res: Response) => {
     }catch (error) {
         console.log(error);
         return res.status(500).json(generalErrorResponse());
+    }
+}
+
+export const loginController = async (req:Request, res:Response) => {
+    const {email, password} = req.body;
+    try {
+        const result = await login(email,password);
+        if(!result.success) {
+            console.log(result);
+            return res.status(401).json(errorResponse('Invalid email or password', 401))
+        } else {
+            res.cookie('token',result.token, {
+                httpOnly:true,
+                secure:false,
+                sameSite:'strict'
+            })
+            console.log('COOKIES: ',result.token);
+            
+            return res.status(200).json(successResponse('Login successful',200,null))
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json(generalErrorResponse())
+    }
+}
+
+export const logoutController = async(req:Request, res:Response) => {
+    try {
+        res.clearCookie('token',{
+            httpOnly:true,
+            secure:false,
+            sameSite:'strict'
+        });
+        return res.status(200).json(successResponse('Logout successful', 200,null))
+    } catch (error) {
+        return res.status(500).json(generalErrorResponse())
     }
 }

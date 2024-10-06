@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.editUserController = void 0;
+exports.deleteUserController = exports.userProfileController = exports.editUserController = void 0;
 const userService_1 = require("../services/userService");
 const responseUtils_1 = require("../utils/responseUtils");
 const editUserController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -34,3 +34,38 @@ const editUserController = (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
 });
 exports.editUserController = editUserController;
+const userProfileController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        console.log("REQ.COOKIES = ", req.cookies);
+        const userId = req.user.id;
+        console.log(userId);
+        const user = yield (0, userService_1.getUserProfile)(userId);
+        console.log(user);
+        if (!user) {
+            return res.status(404).json((0, responseUtils_1.errorResponse)('User not found', 404));
+        }
+        else {
+            console.log(user);
+            return res.status(200).json((0, responseUtils_1.successResponse)('User found successfully', 200, user));
+        }
+    }
+    catch (error) {
+        return res.status(500).json((0, responseUtils_1.generalErrorResponse)());
+    }
+});
+exports.userProfileController = userProfileController;
+const deleteUserController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const deleteUser = yield (0, userService_1.softUserDeletion)(req.params.id);
+        if (deleteUser == 0) {
+            return res.status(200).json((0, responseUtils_1.successResponse)('User deleted successfully', 200, null));
+        }
+        else {
+            return res.status(404).json((0, responseUtils_1.errorResponse)('User not found', 404));
+        }
+    }
+    catch (error) {
+        return res.status(500).json((0, responseUtils_1.generalErrorResponse)());
+    }
+});
+exports.deleteUserController = deleteUserController;

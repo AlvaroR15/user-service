@@ -1,6 +1,6 @@
 import express from 'express'
-import { manualRegisterController } from '../controllers/authController'
-import { editUserController } from '../controllers/userController';
+import { loginController, logoutController, manualRegisterController } from '../controllers/authController'
+import { verifyToken } from '../middlewares/verifyTokenMiddleware';
 
 
 const router = express.Router()
@@ -8,7 +8,10 @@ const router = express.Router()
 
 router.post('/auth-user/register', manualRegisterController);
 
-router.put('/user/edit/:id', editUserController);
+router.post('/auth-user/login', loginController);
+
+router.post('/auth-user/logout', verifyToken,logoutController);
+
 
 
 export default router

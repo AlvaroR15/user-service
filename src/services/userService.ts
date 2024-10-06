@@ -20,3 +20,33 @@ export const editProfileUser = async (data: UserInputEdit, id: string): Promise<
         return 2;
     }
 }
+
+export const getUserProfile = async (id: string) => {
+    try {
+        const findUser = await User.findById(id);
+        if(findUser) {
+            return findUser;
+        } else {
+            return null;
+        }
+    } catch (error) {
+        console.log(error);
+        return null;
+    }   
+}
+
+
+export const softUserDeletion = async(id:string) => {
+    try {
+        const userToDelete = await getUserProfile(id);
+        if(userToDelete !== null) {
+            userToDelete.isDeleted = true;
+            await userToDelete.save();
+            return 0;
+        } else {
+            return 2;
+        }
+    } catch (error) {
+        return 1;
+    }
+}
