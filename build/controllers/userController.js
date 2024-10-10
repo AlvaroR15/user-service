@@ -36,7 +36,6 @@ const editUserController = (req, res) => __awaiter(void 0, void 0, void 0, funct
 exports.editUserController = editUserController;
 const userProfileController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log("REQ.COOKIES = ", req.cookies);
         const userId = req.user.id;
         console.log(userId);
         const user = yield (0, userService_1.getUserProfile)(userId);

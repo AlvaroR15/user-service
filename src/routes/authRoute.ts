@@ -1,6 +1,7 @@
-import express from 'express'
-import { loginController, logoutController, manualRegisterController } from '../controllers/authController'
+import express, { Request, Response } from 'express'
+import { callbackOAuthGoogleController, loginController, logoutController, manualRegisterController, oauthRegisterController } from '../controllers/authController'
 import { verifyToken } from '../middlewares/verifyTokenMiddleware';
+import passport from 'passport';
 
 
 const router = express.Router()
@@ -12,6 +13,8 @@ router.post('/auth-user/login', loginController);
 
 router.post('/auth-user/logout', verifyToken,logoutController);
 
+router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
+router.get('/google/callback', passport.authenticate('google', {failureRedirect: '/', session: false}), callbackOAuthGoogleController)
 
 export default router

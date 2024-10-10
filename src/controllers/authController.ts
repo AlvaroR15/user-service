@@ -1,6 +1,14 @@
 import { Request, Response } from "express";
-import { login, manualRegister } from "../services/authService";
+import { findOrCreateUserToAuthGoogle, generateToken, getGoogleUser, login, manualRegister } from "../services/authService";
 import { successResponse, errorResponse, generalErrorResponse } from "../utils/responseUtils";
+
+
+export const callbackOAuthGoogleController = (req:Request, res:Response) => {
+    const token = generateToken(req.user._id,req.user.email)
+    res.cookie('token',token,{httpOnly: false})
+    return res.status(200).json(successResponse('User logged with Google successfully',200,token))
+}
+
 
 export const manualRegisterController = async (req:Request, res: Response) => {
     const fullname = `${req.body.firstName} ${req.body.lastName}`
@@ -21,7 +29,6 @@ export const manualRegisterController = async (req:Request, res: Response) => {
             return res.status(400).json(errorResponse('User could not be created', 400))
         }
     }catch (error) {
-        console.log(error);
         return res.status(500).json(generalErrorResponse());
     }
 }
@@ -31,7 +38,6 @@ export const loginController = async (req:Request, res:Response) => {
     try {
         const result = await login(email,password);
         if(!result.success) {
-            console.log(result);
             return res.status(401).json(errorResponse('Invalid email or password', 401))
         } else {
             res.cookie('token',result.token, {
@@ -39,7 +45,6 @@ export const loginController = async (req:Request, res:Response) => {
                 secure:false,
                 sameSite:'strict'
             })
-            console.log('COOKIES: ',result.token);
             
             return res.status(200).json(successResponse('Login successful',200,null))
         }

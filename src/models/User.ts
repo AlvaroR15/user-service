@@ -10,10 +10,10 @@ export interface UserInputEdit {
 export interface UserInput {
     fullname:string,
     email:string,
-    password:string,
-    address:string,
-    neighborhoods:string,
-    photo: string,
+    password:string | null,
+    address:string | null,
+    neighborhoods:string | null,
+    photo: string | null,
     isDeleted: boolean
 }
 
@@ -31,19 +31,15 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: true
     },
     address: {
         type: String,
-        required: true
     },
     neighborhoods: {
         type: String,
-        required: true
     },
     photo: {
         type: String,
-        required: true
     },
     role: {
         type: String,

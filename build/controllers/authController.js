@@ -9,9 +9,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.logoutController = exports.loginController = exports.manualRegisterController = void 0;
+exports.logoutController = exports.loginController = exports.manualRegisterController = exports.callbackOAuthGoogleController = void 0;
 const authService_1 = require("../services/authService");
 const responseUtils_1 = require("../utils/responseUtils");
+const callbackOAuthGoogleController = (req, res) => {
+    const token = (0, authService_1.generateToken)(req.user._id, req.user.email);
+    res.cookie('token', token, { httpOnly: false });
+    return res.status(200).json((0, responseUtils_1.successResponse)('User logged with Google successfully', 200, token));
+};
+exports.callbackOAuthGoogleController = callbackOAuthGoogleController;
 const manualRegisterController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const fullname = `${req.body.firstName} ${req.body.lastName}`;
     const dataBody = {
@@ -32,7 +38,6 @@ const manualRegisterController = (req, res) => __awaiter(void 0, void 0, void 0,
         }
     }
     catch (error) {
-        console.log(error);
         return res.status(500).json((0, responseUtils_1.generalErrorResponse)());
     }
 });
@@ -42,7 +47,6 @@ const loginController = (req, res) => __awaiter(void 0, void 0, void 0, function
     try {
         const result = yield (0, authService_1.login)(email, password);
         if (!result.success) {
-            console.log(result);
             return res.status(401).json((0, responseUtils_1.errorResponse)('Invalid email or password', 401));
         }
         else {
@@ -51,7 +55,6 @@ const loginController = (req, res) => __awaiter(void 0, void 0, void 0, function
                 secure: false,
                 sameSite: 'strict'
             });
-            console.log('COOKIES: ', result.token);
             return res.status(200).json((0, responseUtils_1.successResponse)('Login successful', 200, null));
         }
     }

@@ -18,19 +18,15 @@ const userSchema = new mongoose_1.default.Schema({
     },
     password: {
         type: String,
-        required: true
     },
     address: {
         type: String,
-        required: true
     },
     neighborhoods: {
         type: String,
-        required: true
     },
     photo: {
         type: String,
-        required: true
     },
     role: {
         type: String,

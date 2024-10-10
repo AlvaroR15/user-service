@@ -12,12 +12,38 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.login = exports.validateToken = exports.generateToken = exports.manualRegister = void 0;
+exports.login = exports.validateToken = exports.generateToken = exports.manualRegister = exports.findOrCreateUserToAuthGoogle = void 0;
 const User_1 = __importDefault(require("../models/User"));
 const passwordService_1 = require("./passwordService");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
+const findOrCreateUserToAuthGoogle = (profile) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let user = yield User_1.default.findOne({ googleId: profile.id });
+        if (!user) {
+            user = new User_1.default({
+                googleId: profile.id,
+                fullname: profile.displayName,
+                email: profile.emails[0].value,
+                password: null,
+                address: null,
+                neighborhoods: null,
+                photo: null,
+                role: 'USER',
+                isDeleted: false
+            });
+            yield user.save();
+        }
+        console.log(user);
+        return user;
+    }
+    catch (error) {
+        console.log('Error create or find user to auth google service: ', error);
+        throw error;
+    }
+});
+exports.findOrCreateUserToAuthGoogle = findOrCreateUserToAuthGoogle;
 const manualRegister = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const newUser = new User_1.default({
         googleId: null,

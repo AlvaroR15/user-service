@@ -2,8 +2,38 @@ import  User, {UserInput}  from "../models/User";
 import { comparePasswords, hashPassowrd } from "./passwordService";
 import jwt from "jsonwebtoken"
 import dotenv from 'dotenv'
+import axios from "axios";
+
 
 dotenv.config()
+
+
+
+export const findOrCreateUserToAuthGoogle = async (profile: any) => {
+    try {
+      let user = await User.findOne({ googleId: profile.id });
+      if (!user) {
+        user = new User({
+          googleId: profile.id,
+          fullname: profile.displayName,
+          email: profile.emails[0].value,
+          password: null,
+          address: null,
+          neighborhoods: null,
+          photo: null,
+          role: 'USER',
+          isDeleted: false
+        });
+        await user.save();
+      }
+      console.log(user);
+      return user;
+    } catch (error) {
+      console.log('Error create or find user to auth google service: ', error);
+      throw error;
+    }
+};
+
 
 
 export const manualRegister = async (data: UserInput): Promise<number> => {

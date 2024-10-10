@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { editProfileUser, getUserProfile, softUserDeletion } from "../services/userService";
 import { successResponse, errorResponse, generalErrorResponse } from "../utils/responseUtils";
-import { login } from "../services/authService";
 
 
 export const editUserController = async(req:Request, res: Response) => {
@@ -28,7 +27,6 @@ export const editUserController = async(req:Request, res: Response) => {
 
 export const userProfileController = async(req:Request, res: Response) => {
     try {
-        console.log("REQ.COOKIES = ",req.cookies);
         
         const userId = req.user.id;
 

@@ -4,14 +4,19 @@ import authRouter from './routes/authRoute';
 import userRouter from './routes/userRoute'
 import { connectToDB } from './config/connectToDb';
 import cookieParser from 'cookie-parser';
+import passport from 'passport';
+import './config/passportConfig';
 
 
 dotenv.config()
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+
 connectToDB()
 
+app.use(passport.initialize());
 app.use(express.urlencoded({extended: false}))
 app.use(express.json())
 
