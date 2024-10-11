@@ -14,28 +14,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.login = exports.validateToken = exports.generateToken = exports.manualRegister = exports.findOrCreateUserToAuthGoogle = void 0;
 const User_1 = __importDefault(require("../models/User"));
-const passwordService_1 = require("./passwordService");
+const passwordUserService_1 = require("./passwordUserService");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const findOrCreateUserToAuthGoogle = (profile) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
     try {
         let user = yield User_1.default.findOne({ googleId: profile.id });
         if (!user) {
             user = new User_1.default({
                 googleId: profile.id,
-                fullname: profile.displayName,
-                email: profile.emails[0].value,
-                password: null,
-                address: null,
-                neighborhoods: null,
-                photo: null,
+                firstName: ((_a = profile.name) === null || _a === void 0 ? void 0 : _a.givenName) || '',
+                lastName: ((_b = profile.name) === null || _b === void 0 ? void 0 : _b.familyName) || '',
+                email: profile.emails[0].value || '',
+                photo: profile.photos ? profile.photos[0].value : null,
                 role: 'USER',
                 isDeleted: false
             });
             yield user.save();
         }
-        console.log(user);
         return user;
     }
     catch (error) {
@@ -47,9 +45,10 @@ exports.findOrCreateUserToAuthGoogle = findOrCreateUserToAuthGoogle;
 const manualRegister = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const newUser = new User_1.default({
         googleId: null,
-        fullname: data.fullname,
+        firstName: data.firstName,
+        lastName: data.lastName,
         email: data.email,
-        password: (0, passwordService_1.hashPassowrd)(data.password),
+        password: (0, passwordUserService_1.hashPassowrd)(data.password),
         address: data.address,
         neighborhoods: data.neighborhoods,
         photo: data.photo,
@@ -85,7 +84,7 @@ const login = (email, password) => __awaiter(void 0, void 0, void 0, function* (
     const user = yield User_1.default.findOne({ email: email });
     if (!user)
         return { success: false };
-    const passwordMath = (0, passwordService_1.comparePasswords)(password, user.password);
+    const passwordMath = (0, passwordUserService_1.comparePasswords)(password, user.password);
     if (!passwordMath)
         return { success: false };
     const token = (0, exports.generateToken)(user.id, user.email);

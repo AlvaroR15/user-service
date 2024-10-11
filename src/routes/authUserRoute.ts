@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express'
-import { callbackOAuthGoogleController, loginController, logoutController, manualRegisterController, oauthRegisterController } from '../controllers/authController'
+import { callbackOAuthGoogleController, loginController, logoutController, manualRegisterController, oauthRegisterController } from '../controllers/authUserController'
 import { verifyToken } from '../middlewares/verifyTokenMiddleware';
 import passport from 'passport';
 

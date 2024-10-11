@@ -10,18 +10,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.logoutController = exports.loginController = exports.manualRegisterController = exports.callbackOAuthGoogleController = void 0;
-const authService_1 = require("../services/authService");
+const authUserService_1 = require("../services/authUserService");
 const responseUtils_1 = require("../utils/responseUtils");
+const User_1 = require("../models/User");
 const callbackOAuthGoogleController = (req, res) => {
-    const token = (0, authService_1.generateToken)(req.user._id, req.user.email);
+    const token = (0, authUserService_1.generateToken)(req.user._id, req.user.email);
     res.cookie('token', token, { httpOnly: false });
-    return res.status(200).json((0, responseUtils_1.successResponse)('User logged with Google successfully', 200, token));
+    return res.status(200).json((0, responseUtils_1.successResponse)('User logged with Google successfully', 200, null));
 };
 exports.callbackOAuthGoogleController = callbackOAuthGoogleController;
 const manualRegisterController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const fullname = `${req.body.firstName} ${req.body.lastName}`;
+    const result = (0, User_1.validateUserInput)(req.body);
+    if (!result.success)
+        return res.status(400).json(result.error.issues);
     const dataBody = {
-        fullname,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
         email: req.body.email,
         password: req.body.password,
         address: req.body.address,
@@ -29,7 +33,7 @@ const manualRegisterController = (req, res) => __awaiter(void 0, void 0, void 0,
         photo: req.body.photo
     };
     try {
-        const saveUser = yield (0, authService_1.manualRegister)(dataBody);
+        const saveUser = yield (0, authUserService_1.manualRegister)(dataBody);
         if (saveUser === 0) {
             return res.status(201).json((0, responseUtils_1.successResponse)('User created successfully', 201, null));
         }
@@ -45,7 +49,7 @@ exports.manualRegisterController = manualRegisterController;
 const loginController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     try {
-        const result = yield (0, authService_1.login)(email, password);
+        const result = yield (0, authUserService_1.login)(email, password);
         if (!result.success) {
             return res.status(401).json((0, responseUtils_1.errorResponse)('Invalid email or password', 401));
         }

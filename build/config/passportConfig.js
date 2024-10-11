@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const passport_1 = __importDefault(require("passport"));
 const passport_google_oauth20_1 = require("passport-google-oauth20");
 const User_1 = __importDefault(require("../models/User"));
-const authService_1 = require("../services/authService");
+const authUserService_1 = require("../services/authUserService");
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 passport_1.default.use(new passport_google_oauth20_1.Strategy({
@@ -24,8 +24,8 @@ passport_1.default.use(new passport_google_oauth20_1.Strategy({
     callbackURL: `http://localhost:${process.env.PORT}/api-user/google/callback`,
 }, (accessToken, refreshToken, profile, done) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const user = yield (0, authService_1.findOrCreateUserToAuthGoogle)(profile);
-        done(null, user.user);
+        const user = yield (0, authUserService_1.findOrCreateUserToAuthGoogle)(profile);
+        done(null, user);
     }
     catch (error) {
         done(error, false);

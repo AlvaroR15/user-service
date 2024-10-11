@@ -1,19 +1,23 @@
 import { Request, Response } from "express";
-import { findOrCreateUserToAuthGoogle, generateToken, getGoogleUser, login, manualRegister } from "../services/authService";
+import { findOrCreateUserToAuthGoogle, generateToken, getGoogleUser, login, manualRegister } from "../services/authUserService";
 import { successResponse, errorResponse, generalErrorResponse } from "../utils/responseUtils";
+import { validateUserInput } from "../models/User";
 
 
 export const callbackOAuthGoogleController = (req:Request, res:Response) => {
     const token = generateToken(req.user._id,req.user.email)
     res.cookie('token',token,{httpOnly: false})
-    return res.status(200).json(successResponse('User logged with Google successfully',200,token))
+    return res.status(200).json(successResponse('User logged with Google successfully',200,null))
 }
 
 
 export const manualRegisterController = async (req:Request, res: Response) => {
-    const fullname = `${req.body.firstName} ${req.body.lastName}`
+    const result = validateUserInput(req.body);
+    if(!result.success) return res.status(400).json(result.error.issues)
+
     const dataBody = {
-        fullname,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
         email: req.body.email,
         password: req.body.password,
         address: req.body.address,

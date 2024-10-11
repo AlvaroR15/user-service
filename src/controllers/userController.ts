@@ -1,18 +1,24 @@
 import { Request, Response } from "express";
 import { editProfileUser, getUserProfile, softUserDeletion } from "../services/userService";
 import { successResponse, errorResponse, generalErrorResponse } from "../utils/responseUtils";
+import { validateUserInputEdit } from "../models/User";
 
 
 export const editUserController = async(req:Request, res: Response) => {
+    const result = validateUserInputEdit(req.body);
+    if(!result.success) return res.status(400).json(result.error.issues)
+
     const dataBody = {
-        fullname: req.body.firstName+' '+req.body.lastName,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
         address: req.body.address,
         neighborhoods: req.body.neighborhoods,
         photo: req.body.photo
     }
 
     try {
-        const saveUser = await editProfileUser(dataBody, req.params.id);
+        const userId = req.user.id;
+        const saveUser = await editProfileUser(dataBody, userId);
         if(saveUser === 2) {
             return res.status(404).json(errorResponse('User not found', 404))
         } else {
@@ -30,15 +36,12 @@ export const userProfileController = async(req:Request, res: Response) => {
         
         const userId = req.user.id;
 
-        console.log(userId);
         
         const user = await getUserProfile(userId);
-        console.log(user);
 
         if(!user) {
             return res.status(404).json(errorResponse('User not found',404))
         } else {
-            console.log(user);
             return res.status(200).json(successResponse('User found successfully',200,user))
         }
     } catch (error) {
@@ -49,7 +52,8 @@ export const userProfileController = async(req:Request, res: Response) => {
 
 export const deleteUserController = async(req:Request, res:Response) => {
     try {
-        const deleteUser = await softUserDeletion(req.params.id);
+        const userId = req.user.id;
+        const deleteUser = await softUserDeletion(userId);
         if(deleteUser == 0) {
             return res.status(200).json(successResponse('User deleted successfully',200,null))
         } else {

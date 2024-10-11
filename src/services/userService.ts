@@ -6,7 +6,8 @@ export const editProfileUser = async (data: UserInputEdit, id: string): Promise<
         if(!findUser) {
             return 1;
         } else {
-            findUser.fullname = data.fullname;
+            findUser.firstName = data.firstName;
+            findUser.lastName = data.lastName;
             findUser.address = data.address;
             findUser.neighborhoods = data.neighborhoods;
             if(data.photo) {

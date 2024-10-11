@@ -12,15 +12,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteUserController = exports.userProfileController = exports.editUserController = void 0;
 const userService_1 = require("../services/userService");
 const responseUtils_1 = require("../utils/responseUtils");
+const User_1 = require("../models/User");
 const editUserController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = (0, User_1.validateUserInput)(req.body);
+    if (!result.success)
+        return res.status(400).json(result.error.issues);
     const dataBody = {
-        fullname: req.body.firstName + ' ' + req.body.lastName,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
         address: req.body.address,
         neighborhoods: req.body.neighborhoods,
         photo: req.body.photo
     };
     try {
-        const saveUser = yield (0, userService_1.editProfileUser)(dataBody, req.params.id);
+        const userId = req.user.id;
+        const saveUser = yield (0, userService_1.editProfileUser)(dataBody, userId);
         if (saveUser === 2) {
             return res.status(404).json((0, responseUtils_1.errorResponse)('User not found', 404));
         }
@@ -37,14 +43,11 @@ exports.editUserController = editUserController;
 const userProfileController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userId = req.user.id;
-        console.log(userId);
         const user = yield (0, userService_1.getUserProfile)(userId);
-        console.log(user);
         if (!user) {
             return res.status(404).json((0, responseUtils_1.errorResponse)('User not found', 404));
         }
         else {
-            console.log(user);
             return res.status(200).json((0, responseUtils_1.successResponse)('User found successfully', 200, user));
         }
     }
@@ -55,7 +58,8 @@ const userProfileController = (req, res) => __awaiter(void 0, void 0, void 0, fu
 exports.userProfileController = userProfileController;
 const deleteUserController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const deleteUser = yield (0, userService_1.softUserDeletion)(req.params.id);
+        const userId = req.user.id;
+        const deleteUser = yield (0, userService_1.softUserDeletion)(userId);
         if (deleteUser == 0) {
             return res.status(200).json((0, responseUtils_1.successResponse)('User deleted successfully', 200, null));
         }

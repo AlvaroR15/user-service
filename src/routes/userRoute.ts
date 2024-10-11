@@ -4,11 +4,11 @@ import { verifyToken } from '../middlewares/verifyTokenMiddleware';
 
 const router = express.Router()
 
-router.get('/profile', verifyToken,userProfileController)
+router.get('/profile', verifyToken, userProfileController)
 
-router.put('/edit/:id', editUserController);
+router.put('/edit', verifyToken,editUserController);
 
-router.delete('/delete/:id', deleteUserController)
+router.delete('/delete', verifyToken,deleteUserController)
 
 
 

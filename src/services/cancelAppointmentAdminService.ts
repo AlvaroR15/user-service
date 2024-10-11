@@ -1,0 +1,1 @@
+// cancelAppointment(): Cancelar turnos.

@@ -1,6 +1,6 @@
 import express from 'express'
 import dotenv from 'dotenv'
-import authRouter from './routes/authRoute';
+import authRouter from './routes/authUserRoute';
 import userRouter from './routes/userRoute'
 import { connectToDB } from './config/connectToDb';
 import cookieParser from 'cookie-parser';

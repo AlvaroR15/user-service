@@ -21,7 +21,8 @@ const editProfileUser = (data, id) => __awaiter(void 0, void 0, void 0, function
             return 1;
         }
         else {
-            findUser.fullname = data.fullname;
+            findUser.firstName = data.firstName;
+            findUser.lastName = data.lastName;
             findUser.address = data.address;
             findUser.neighborhoods = data.neighborhoods;
             if (data.photo) {

@@ -1,7 +1,7 @@
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import User from '../models/User';
-import { findOrCreateUserToAuthGoogle } from '../services/authService';
+import { findOrCreateUserToAuthGoogle } from '../services/authUserService';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -16,7 +16,7 @@ passport.use(
     async (accessToken: string, refreshToken: string, profile: any, done: any) => {
       try {
         const user = await findOrCreateUserToAuthGoogle(profile);
-        done(null, user.user);
+        done(null, user);
       } catch (error) {
         done(error, false);
       }
